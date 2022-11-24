@@ -23,7 +23,7 @@ from mmseg.utils import (collect_env, get_device, get_root_logger,
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a segmentor')
-    parser.add_argument('config', help='train config file path')
+    parser.add_argument('--config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
         '--load-from', help='the checkpoint file to load weights from')
@@ -31,7 +31,7 @@ def parse_args():
         '--resume-from', help='the checkpoint file to resume from')
     parser.add_argument(
         '--no-validate',
-        action='store_true',
+        type=bool, default=False,
         help='whether not to evaluate the checkpoint during training')
     group_gpus = parser.add_mutually_exclusive_group()
     group_gpus.add_argument(
@@ -54,11 +54,11 @@ def parse_args():
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
         '--diff_seed',
-        action='store_true',
+        type=bool, default=False,
         help='Whether or not set different seeds for different ranks')
     parser.add_argument(
         '--deterministic',
-        action='store_true',
+        type=bool, default=False,
         help='whether to set deterministic options for CUDNN backend.')
     parser.add_argument(
         '--options',
@@ -89,7 +89,7 @@ def parse_args():
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument(
         '--auto-resume',
-        action='store_true',
+        type=bool, default=False,
         help='resume from the latest checkpoint automatically.')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
@@ -165,7 +165,7 @@ def main():
     timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
     log_file = osp.join(cfg.work_dir, f'{timestamp}.log')
     logger = get_root_logger(log_file=log_file, log_level=cfg.log_level)
-
+    
     # set multi-process settings
     setup_multi_processes(cfg)
 
