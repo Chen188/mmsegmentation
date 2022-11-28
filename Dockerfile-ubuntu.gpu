@@ -3,6 +3,8 @@ FROM nvidia/cuda:11.1.1-base-ubuntu20.04
 ARG TORCH_VERSION=1.10.0
 ARG TORCHVISION_VERSION=0.11.0
 
+ARG PYPI_REPO=' -i https://pypi.doubanio.com/simple '
+
 ENV FORCE_CUDA=1
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -31,6 +33,7 @@ RUN pip uninstall torch torchvision -y && \
 COPY requirements.txt /tmp/
 COPY requirements /tmp/requirements/
 
-RUN pip install --no-cache-dir mmcv-full==1.7.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch${TORCH_VERSION}/index.html && \
-    cd /tmp/ && pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt && rm -rf /tmp/requirements* && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple sagemaker-training==4.3.0
+RUN pip install --no-cache-dir opencv-python>=3 ${PYPI_REPO} && \
+    pip install --no-cache-dir mmcv-full==1.7.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch${TORCH_VERSION}/index.html && \
+    cd /tmp/ && pip install --no-cache-dir ${PYPI_REPO} -r requirements.txt && rm -rf /tmp/requirements* && \
+    pip install --no-cache-dir ${PYPI_REPO} sagemaker-training==4.3.0
